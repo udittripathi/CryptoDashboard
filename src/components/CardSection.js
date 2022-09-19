@@ -9,15 +9,7 @@ export class CardSection extends Component {
                     {this.props.coinName}
                 </div>
                 <section className="row m-3 mb-0" style={{ marginTop: ' 2px !important' }}>
-                    <div className="card text-white text-center  m-3"
-                        style={{ width: "11rem", backgroundColor: "#145C9E", marginTop: "0px !important" }}>
-                        <div className="card-body">
-                            <h6 className="card-title" style={{ fontFamily: 'NHaasGroteskDSPro-65Md' }}>Market Cap 24Hrs</h6>
-                            <p className="card-text fw-bold fs-5" style={{ color: "#fcdf03" }}>
-                                {this.props.mCap24} %
-                            </p>
-                        </div>
-                    </div>
+
                     <div className="card text-white text-center  m-3"
                         style={{ width: "11rem", backgroundColor: "#145C9E", marginTop: "0px !important" }}>
                         <div className="card-body">
@@ -27,25 +19,8 @@ export class CardSection extends Component {
                             </p>
                         </div>
                     </div>
-                    <div className="card text-white text-center  m-3"
-                        style={{ width: "11rem", backgroundColor: "#145C9E", marginTop: "0px !important" }}>
-                        <div className="card-body">
-                            <h6 className="card-title" style={{ fontFamily: 'NHaasGroteskDSPro-65Md' }}>All Time High</h6>
-                            <p className="card-text fw-bold fs-5" style={{ color: "#fcdf03" }}>
-                                ${this.props.atl}
-                            </p>
-                        </div>
-                    </div>
 
-                    <div className="card text-white text-center  m-3"
-                        style={{ width: "11rem", backgroundColor: "#145C9E", marginTop: "0px !important" }}>
-                        <div className="card-body">
-                            <h6 className="card-title" style={{ fontFamily: 'NHaasGroteskDSPro-65Md' }}>Positive Sentiments </h6>
-                            <p className="card-text fw-bold fs-5" style={{ color: "#fcdf03" }}>
-                                {this.props.sentiment} %
-                            </p>
-                        </div>
-                    </div>
+                   
                     <div className="card text-white text-center  m-3"
                         style={{ width: "11rem", backgroundColor: "#145C9E", marginTop: "0px !important" }}>
                         <div className="card-body">
