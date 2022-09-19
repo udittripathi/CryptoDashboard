@@ -6,8 +6,6 @@ export class Header extends Component {
     render() {
         return (
             <div>
-                {/* <nav className="navbar navbar-expand-lg" style={{backgroundColor:"#fcdf03"}}>
-                    <div className="container-fluid"> */}
 
                     <Typography 
                      variant="h2" textAlign={"center"} 
