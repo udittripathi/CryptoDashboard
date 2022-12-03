@@ -32,6 +32,9 @@ export const cryptoApi = createApi({
   }),
 });
 
+export const MonthlyCoin = (id) =>
+  `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_WEEKLY&symbol=${id}&market=USD&apikey=0ZOBQU6TFH7M286O`;
+
 export const {
   useGetCryptosQuery,
   useGetCryptoDetailsQuery,

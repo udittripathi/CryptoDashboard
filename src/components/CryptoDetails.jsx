@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import HTMLReactParser from 'html-react-parser';
 import { useParams } from 'react-router-dom';
 import millify from 'millify';
+import axios from "axios";
 import { Col, Row, Typography, Select } from 'antd';
 import { MoneyCollectOutlined, DollarCircleOutlined, FundOutlined, ExclamationCircleOutlined, StopOutlined, TrophyOutlined, CheckOutlined, NumberOutlined, ThunderboltOutlined } from '@ant-design/icons';
 
 import { useGetCryptoDetailsQuery, useGetCryptoHistoryQuery } from '../services/cryptoApi';
 import Loader from './Loader';
 import LineChart from './LineChart';
+import { MonthlyCoin } from '../services/cryptoApi';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const CryptoDetails = () => {
+      
+  const [resistance1, setResistance1] = React.useState(0);
+  const [resistance2, setResistance2] = React.useState(0);
+  const [support1, setSupport1] = React.useState(0);
+  const [support2, setSupport2] = React.useState(0);
+  const [pivotPoint, setPivotPoint] = React.useState(0);
+  const [buy,setbuy] = React.useState("DON'T BUY");
+
+
   const { coinId } = useParams();
   const [timeperiod, setTimeperiod] = useState('7d');
   const { data, isFetching } = useGetCryptoDetailsQuery(coinId);
@@ -20,8 +31,10 @@ const CryptoDetails = () => {
   const cryptoDetails = data?.data?.coin;
 
   if (isFetching) return <Loader />;
-
+  // console.log(data.data.coin.symbol);
   const time = ['3h', '24h', '7d', '30d', '1y', '3m', '3y', '5y'];
+  const month  = {low: "", high: "", close: ""};
+  const points = {r1: "", r2: "", pp: "", s1: "", s2: ""};
 
   const stats = [
     { title: 'Price to USD', value: `$ ${cryptoDetails?.price && millify(cryptoDetails?.price)}`, icon: <DollarCircleOutlined /> },
@@ -29,6 +42,15 @@ const CryptoDetails = () => {
     { title: '24h Volume', value: `$ ${cryptoDetails?.volume && millify(cryptoDetails?.volume)}`, icon: <ThunderboltOutlined /> },
     { title: 'Market Cap', value: `$ ${cryptoDetails?.marketCap && millify(cryptoDetails?.marketCap)}`, icon: <DollarCircleOutlined /> },
     { title: 'All-time-high(daily avg.)', value: `$ ${cryptoDetails?.allTimeHigh?.price && millify(cryptoDetails?.allTimeHigh?.price)}`, icon: <TrophyOutlined /> },
+    { title: 'Resistance 1', value: `$ ${resistance1}`, icon: <DollarCircleOutlined /> },
+    { title: 'Resistance 2', value: `$ ${resistance2}`, icon: <DollarCircleOutlined /> },
+    { title: 'Pivot Point', value: `$ ${pivotPoint}`, icon: <DollarCircleOutlined /> },
+    { title: 'Support Point 1', value: `$ ${support1}`, icon: <DollarCircleOutlined /> },
+    { title: 'Support Point 2', value: `$ ${support2}`, icon: <DollarCircleOutlined /> },
+    { title: 'BUY/NOT BUY', value: `$ ${buy}`, icon: <DollarCircleOutlined /> },
+
+
+
   ];
 
   const genericStats = [
@@ -38,6 +60,83 @@ const CryptoDetails = () => {
     { title: 'Total Supply', value: `$ ${cryptoDetails?.supply?.total && millify(cryptoDetails?.supply?.total)}`, icon: <ExclamationCircleOutlined /> },
     { title: 'Circulating Supply', value: `$ ${cryptoDetails?.supply?.circulating && millify(cryptoDetails?.supply?.circulating)}`, icon: <ExclamationCircleOutlined /> },
   ];
+
+  const fetchPrevCoinData = (async () => {
+    const ex1 = data.data.coin.symbol?.toString() || '';
+    // console.log(ex1);
+    const MonthlyData = await axios.get(MonthlyCoin(ex1));
+   
+    // console.log(MonthlyData)
+    const neww = MonthlyData.data["Time Series (Digital Currency Weekly)"];
+   // console.log(neww["2020-03-15"])
+   
+    for(var key in neww){
+      if(key == "2022-11-20"){
+        month.low = neww[key]["3a. low (USD)"];
+        month.high = neww[key]["2a. high (USD)"];
+        month.close = neww[key]["4a. close (USD)"];
+       // console.log(month.low)
+      //  console.log(month.high)
+      //  console.log(month.close)
+      }
+    }
+   // setPrevCoin(neww);
+    // setIsLoading(false);
+  
+  
+    // console.log(month);
+    // console.log(points);
+  
+   let high=parseInt(month.high)
+   let low=parseInt(month.low)
+   let close=parseInt(month.close)
+    let pp = (high + low + close) / 3;
+   
+    let r3 = pp + 2* (high - low)
+    let r2 = pp + (high - low)
+    let r1 = 2* pp - low
+    
+    let s1 = 2* pp - high;
+    let s2 = pp - (high - low)
+    let s3 = pp - 2* (high - low)  
+ 
+    points.r1 = r1;
+    points.r2 = r2;
+    points.pp = pp;
+    points.s1 = s1;
+    points.s2 = s2;
+    setResistance1(points.r1);
+    setResistance2(points.r2);
+    setPivotPoint(points.pp);
+    setSupport1(points.s1);
+    setSupport2(points.s2);
+  
+  });
+
+  console.log(resistance1)
+  console.log(resistance2)
+  console.log(pivotPoint)
+  console.log(support1)
+  console.log(support2)
+  
+ const buynotbuy  =  ()=>{
+    if(cryptoDetails?.price>=resistance1 && cryptoDetails?.price<=resistance2){
+        setbuy("BUY");
+    }
+ }
+
+ console.log(buy)
+
+fetchPrevCoinData();
+buynotbuy();
+
+
+// console.log("DATATAAA")
+// //  console.log(cryptoDetails?.price[currency.toLowerCase()]);
+//  console.log(resistance1 - 8)
+//  console.log(resistance2)
+
+
 
   return (
     <Col className="coin-detail-container">
