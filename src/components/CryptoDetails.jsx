@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useLayoutEffect } from 'react';
 import HTMLReactParser from 'html-react-parser';
 import { useParams } from 'react-router-dom';
 import millify from 'millify';
@@ -39,7 +39,7 @@ const CryptoDetails = () => {
   const stats = [
     { title: 'Price to USD', value: `$ ${cryptoDetails?.price && millify(cryptoDetails?.price)}`, icon: <DollarCircleOutlined /> },
     { title: 'Rank', value: cryptoDetails?.rank, icon: <NumberOutlined /> },
-    { title: '24h Volume', value: `$ ${cryptoDetails?.volume && millify(cryptoDetails?.volume)}`, icon: <ThunderboltOutlined /> },
+    // { title: '24h Volume', value: `$ ${cryptoDetails?.volume && millify(cryptoDetails?.volume)}`, icon: <ThunderboltOutlined /> },
     { title: 'Market Cap', value: `$ ${cryptoDetails?.marketCap && millify(cryptoDetails?.marketCap)}`, icon: <DollarCircleOutlined /> },
     { title: 'All-time-high(daily avg.)', value: `$ ${cryptoDetails?.allTimeHigh?.price && millify(cryptoDetails?.allTimeHigh?.price)}`, icon: <TrophyOutlined /> },
     { title: 'Resistance 1', value: `$ ${resistance1}`, icon: <DollarCircleOutlined /> },
@@ -61,7 +61,7 @@ const CryptoDetails = () => {
     { title: 'Circulating Supply', value: `$ ${cryptoDetails?.supply?.circulating && millify(cryptoDetails?.supply?.circulating)}`, icon: <ExclamationCircleOutlined /> },
   ];
 
-  const fetchPrevCoinData = (async () => {
+  const fetchPrevCoinData = useCallback(async () => {
     const ex1 = data.data.coin.symbol?.toString() || '';
     // console.log(ex1);
     const MonthlyData = await axios.get(MonthlyCoin(ex1));
@@ -105,16 +105,17 @@ const CryptoDetails = () => {
     points.pp = pp;
     points.s1 = s1;
     points.s2 = s2;
-    setResistance1(points.r1);
-    setResistance2(points.r2);
     setPivotPoint(points.pp);
     setSupport1(points.s1);
     setSupport2(points.s2);
+    setResistance1(points.r1);
+    setResistance2(points.r2);
+    
   
   });
 
-  console.log(resistance1)
   console.log(resistance2)
+  console.log(resistance1)
   console.log(pivotPoint)
   console.log(support1)
   console.log(support2)
@@ -127,9 +128,14 @@ const CryptoDetails = () => {
 
  console.log(buy)
 
-fetchPrevCoinData();
-buynotbuy();
+// fetchPrevCoinData();
+// buynotbuy();
 
+React.useEffect(() => {
+  fetchPrevCoinData();
+  buynotbuy();
+      
+}, [resistance1, buy]);
 
 // console.log("DATATAAA")
 // //  console.log(cryptoDetails?.price[currency.toLowerCase()]);

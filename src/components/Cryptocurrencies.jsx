@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect,useCallback } from 'react';
 import millify from 'millify';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Input } from 'antd';
@@ -11,14 +11,19 @@ const Cryptocurrencies = ({ simplified }) => {
   const { data: cryptosList, isFetching } = useGetCryptosQuery(count);
   const [cryptos, setCryptos] = useState();
   const [searchTerm, setSearchTerm] = useState('');
+  const [Count, setCount] = useState(0);
 
-  useEffect(() => {
+// if(Count<5){
+  useLayoutEffect(() => {
     setCryptos(cryptosList?.data?.coins);
 
     const filteredData = cryptosList?.data?.coins.filter((item) => item.name.toLowerCase().includes(searchTerm));
 
     setCryptos(filteredData);
   }, [cryptosList, searchTerm]);
+//   setCount(Count+1);
+// }
+  
 
   if (isFetching) return <Loader />;
 
