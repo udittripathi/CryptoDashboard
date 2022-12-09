@@ -82,8 +82,7 @@ const CryptoDetails = () => {
     }
    // setPrevCoin(neww);
     // setIsLoading(false);
-  
-  
+
     // console.log(month);
     // console.log(points);
   
